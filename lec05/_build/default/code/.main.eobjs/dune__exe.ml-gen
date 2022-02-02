@@ -1,0 +1,10 @@
+(** @canonical Dune__exe.Compile *)
+module Compile = Dune__exe__Compile
+
+
+(** @canonical Dune__exe.Main *)
+module Main = Dune__exe__Main
+
+
+(** @canonical Dune__exe.X86 *)
+module X86 = Dune__exe__X86

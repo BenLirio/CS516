@@ -1,0 +1,6 @@
+(** @canonical Dune__exe.Ir3 *)
+module Ir3 = Dune__exe__Ir3
+
+
+(** @canonical Dune__exe.Main3 *)
+module Main3 = Dune__exe__Main3

@@ -1,0 +1,10 @@
+(** @canonical Dune__exe.Ir1 *)
+module Ir1 = Dune__exe__Ir1
+
+
+(** @canonical Dune__exe.Ir1lirio *)
+module Ir1lirio = Dune__exe__Ir1lirio
+
+
+(** @canonical Dune__exe.Main1 *)
+module Main1 = Dune__exe__Main1

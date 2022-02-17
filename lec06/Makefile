@@ -6,6 +6,9 @@ debug: all main1.cma main2.cma main3.cma
 %.cma: .FORCE
 	$(OCB) $@
 
+main3.exe: code/main3.ml code/ir3.ml
+	dune build
+	cp code/main3.exe .
 %.exe:
 	dune build
 	cp code/$@ .

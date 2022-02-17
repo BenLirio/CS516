@@ -8,7 +8,7 @@
 (executable
  (public_name main1)
  (name main1)
- (modules main1 ir1)
+ (modules main1 ir1 ir1lirio)
  (promote (until-clean)))
 
 (executable

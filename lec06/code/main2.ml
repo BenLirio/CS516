@@ -11,7 +11,8 @@ let varX7 = ref 7L
 let varX8 = ref 8L
 
 let _ = 
-  let p  = SRC.example_cmd in
-  let ir = Compile.compile p in
-  let s  = IR.pp_program ir in
-  print_endline s
+  let print_ith_cmd i cmd =
+    Printf.printf "Basic: %d\n" i;
+    cmd |> Compile.compile |> IR.pp_program |> print_endline
+  in
+  List.iteri print_ith_cmd SRC.basic_cmds

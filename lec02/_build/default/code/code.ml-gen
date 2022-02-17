@@ -1,0 +1,6 @@
+(** @canonical Code.Simple *)
+module Simple = Code__Simple
+
+
+(** @canonical Code.Translate *)
+module Translate = Code__Translate

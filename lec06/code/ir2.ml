@@ -38,6 +38,15 @@ module SRC = struct
     Seq(Assn("X1", example),
     Seq(Skip,
         Assn("X2", Mul(Var "X1", Var "X1"))))
+  let assn_cmd : cmd =
+    Assn("X1", Const 1L)
+  let basic_cmds : cmd list = 
+    [ Assn("X1", Const 1L)
+
+    ; Seq(Assn("X1", Const 42L),
+      Seq(Assn("X1", Add(Var "X1", Var "X1")),
+      Skip))
+    ]
   
 end
 
@@ -84,19 +93,19 @@ module IR = struct
     | Const c -> (Int64.to_string c)^"L"
 
   let pp_bop = function
-    | Add -> "add"
-    | Mul -> "mul"
+    | Add -> "+"
+    | Mul -> "*"
   
   let pp_insn = function
     | Let (u, bop, op1, op2) ->
-      Printf.sprintf "let %s = %s %s %s"
-        (pp_uid u) (pp_bop bop) (pp_opn op1) (pp_opn op2)
+      Printf.sprintf "%s <- %s %s %s"
+        (pp_uid u) (pp_opn op1) (pp_bop bop) (pp_opn op2)
     | Load (u, x) ->
-      Printf.sprintf "let %s = load %s"
+      Printf.sprintf "%s <- %s"
         (pp_uid u) (pp_var x)
     | Store (x, op) ->
-      Printf.sprintf "let _ = store %s %s"
-        (pp_opn op) (pp_var x)
+      Printf.sprintf "%s <- %s"
+        (pp_var x) (pp_opn op)
   
   let pp_program {insns} =
     (String.concat " in\n" (List.map pp_insn insns)) ^
@@ -114,9 +123,9 @@ end
 
 
 module Compile = struct
-  open SRC
   
-  let rec compile_exp (e:exp) : (IR.insn list) * IR.opn =
+  (* Expression *)
+  let rec compile_exp (e:SRC.exp) : (IR.insn list) * IR.opn =
     let compile_bop bop e1 e2 = 
         let ins1, ret1 = compile_exp e1 in
         let ins2, ret2 = compile_exp e2 in
@@ -124,26 +133,27 @@ module Compile = struct
         ins1 @ ins2 @ IR.[Let (ret, bop, ret1, ret2)], IR.Id ret
     in
     begin match e with
-      | Var x ->
+      | SRC.Var x ->
         let ret = IR.mk_uid () in
         IR.[Load(ret, x)], IR.Id ret
-      | Const c     -> [], IR.Const c
-      | Add(e1, e2) -> compile_bop IR.Add e1 e2
-      | Mul(e1, e2) -> compile_bop IR.Mul e1 e2
-      | Neg(e1)     -> compile_bop IR.Mul e1 (Const(-1L))
+      | SRC.Const c     -> [], IR.Const c
+      | SRC.Add(e1, e2) -> compile_bop IR.Add e1 e2
+      | SRC.Mul(e1, e2) -> compile_bop IR.Mul e1 e2
+      | SRC.Neg(e1)     -> compile_bop IR.Mul e1 (Const(-1L))
     end
 
-  let rec compile_cmd (c:cmd) : (IR.insn list) =
+  (* Command *)
+  let rec compile_cmd (c:SRC.cmd) : (IR.insn list) =
     begin match c with
-      | Skip -> []
-      | Assn(x, e) ->
+      | SRC.Skip -> []
+      | SRC.Assn(x, e) ->
         let ins1, ret1 = compile_exp e in
         ins1 @ IR.[Store(x, ret1)]
-      | Seq(c1, c2) ->
+      | SRC.Seq(c1, c2) ->
         (compile_cmd c1) @ (compile_cmd c2)
     end
     
-  let compile (c:cmd) : IR.program =
+  let compile (c:SRC.cmd) : IR.program =
     let insns = compile_cmd c in
     IR.{ insns }
 

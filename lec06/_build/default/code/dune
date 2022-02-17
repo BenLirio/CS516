@@ -1,0 +1,24 @@
+(env
+ (dev
+  (flags
+   (:standard -w "+a-4-7-9-27-29-30-32..42-44-45-48-50-60-66..70")
+   ))) 
+
+
+(executable
+ (public_name main1)
+ (name main1)
+ (modules main1 ir1 ir1lirio)
+ (promote (until-clean)))
+
+(executable
+ (public_name main2)
+ (name main2)
+ (modules main2 ir2)
+ (promote (until-clean)))
+
+(executable
+ (public_name main3)
+ (name main3)
+ (modules main3 ir3)
+ (promote (until-clean)))
